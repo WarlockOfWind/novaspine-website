@@ -12,8 +12,6 @@ export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [carAnimation, setCarAnimation] = useState('idle');
   const [hasAnimated, setHasAnimated] = useState(false);
-  const [showCloud, setShowCloud] = useState(false);
-  const [hideCloud, setHideCloud] = useState(false);
   const [miniConfigCarAnimated, setMiniConfigCarAnimated] = useState(false);
 
   useEffect(() => {
@@ -54,22 +52,10 @@ export default function Home() {
           const progress = Math.min(scrolled / maxScroll, 1);
           setScrollProgress(progress);
 
-          // Animation de la voiture après un court scroll - déclenchement uniquement
+          // Animation de la voiture après un court scroll - simplifiée
           if (scrolled > 75 && !hasAnimated) {
             setHasAnimated(true);
-            setCarAnimation('vibrate');
-            // L'animation se poursuit indépendamment du scroll
-            const animationSequence = () => {
-              setTimeout(() => {
-                setCarAnimation('drive-away');
-                setShowCloud(true);
-                // Faire disparaître le nuage après quelques secondes
-                setTimeout(() => {
-                  setHideCloud(true);
-                }, 3000);
-              }, 1200);
-            };
-            animationSequence();
+            setCarAnimation('drive-away');
           }
 
           ticking = false;
@@ -281,20 +267,9 @@ export default function Home() {
                     width={1000}
                     height={800}
                     className={`w-full max-w-2xl h-auto drop-shadow-2xl scale-x-[-1] transition-all duration-700 ${
-                      carAnimation === 'vibrate' ? 'animate-vibrate' : 
                       carAnimation === 'drive-away' ? 'animate-drive-away' : ''
                     }`}
                     priority
-                  />
-                  {/* Nuage qui apparaît derrière la voiture quand elle démarre */}
-                  <Image
-                    src="/nuage.png"
-                    alt="Nuage"
-                    width={200}
-                    height={100}
-                    className={`absolute bottom-16 left-1/2 transform -translate-x-1/2 transition-all duration-700 ${
-                      showCloud && !hideCloud ? 'opacity-100 translate-x-[-20px] translate-y-[-10px]' : 'opacity-0 translate-x-0 translate-y-0'
-                    }`}
                   />
                 </div>
               </div>
