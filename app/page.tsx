@@ -244,7 +244,7 @@ export default function Home() {
                 {/* CTA Hero */}
                 <div className="space-y-4 mb-8">
                   <a 
-                    href="#configurateur" 
+                    href="/configurateur" 
                     className="block w-full bg-[#f2cb05] text-[#1e62d0] px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#e6c205] transition-all duration-300 transform hover:scale-105 shadow-lg text-center"
                   >
                     Configurer mon véhicule
@@ -284,7 +284,7 @@ export default function Home() {
               Quel est votre besoin ?
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
-              <a href="/parcours/conducteur" className="group">
+              <a href="/configurateur" className="group">
                 <div className="bg-white shadow-xl border border-gray-100 p-8 rounded-xl hover:transform hover:scale-105 transition-all duration-300 cursor-pointer hover:shadow-2xl h-full flex flex-col">
                   <div className="w-20 h-20 bg-gradient-to-br from-[#1e62d0] to-[#4b94e6] rounded-xl flex items-center justify-center mb-6 mx-auto group-hover:from-[#4b94e6] group-hover:to-[#1e62d0] transition-all duration-300 shadow-lg transform group-hover:rotate-3">
                     <div className="w-8 h-8 bg-white/20 rounded-lg transform group-hover:scale-110 transition-transform duration-300"></div>
@@ -301,7 +301,7 @@ export default function Home() {
                 </div>
               </a>
               
-              <a href="/parcours/transport" className="group">
+              <a href="/configurateur" className="group">
                 <div className="bg-white shadow-xl border border-gray-100 p-8 rounded-xl hover:transform hover:scale-105 transition-all duration-300 cursor-pointer hover:shadow-2xl h-full flex flex-col">
                   <div className="w-20 h-20 bg-gradient-to-br from-[#4b94e6] to-[#1e62d0] rounded-xl flex items-center justify-center mb-6 mx-auto group-hover:from-[#1e62d0] group-hover:to-[#4b94e6] transition-all duration-300 shadow-lg transform group-hover:-rotate-3">
                     <div className="w-6 h-6 bg-white/20 rounded-full transform group-hover:scale-110 transition-transform duration-300"></div>
@@ -318,7 +318,7 @@ export default function Home() {
                 </div>
               </a>
               
-              <a href="/parcours/professionnel" className="group">
+              <a href="/configurateur" className="group">
                 <div className="bg-white shadow-xl border border-gray-100 p-8 rounded-xl hover:transform hover:scale-105 transition-all duration-300 cursor-pointer hover:shadow-2xl h-full flex flex-col">
                   <div className="w-20 h-20 bg-gradient-to-br from-[#f2cb05] to-[#e6c205] rounded-xl flex items-center justify-center mb-6 mx-auto group-hover:from-[#e6c205] group-hover:to-[#f2cb05] transition-all duration-300 shadow-lg transform group-hover:rotate-6">
                     <div className="w-8 h-6 bg-[#1e62d0]/20 rounded-md transform group-hover:scale-110 transition-transform duration-300"></div>
@@ -414,7 +414,7 @@ export default function Home() {
 
                     <div className="text-center">
                       <a
-                        href="#"
+                        href="/configurateur"
                         className="inline-block bg-[#FFD700] text-[#0C1C3D] px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-300 hover:bg-[#FFD700]/90 shadow-lg w-full sm:w-auto"
                       >
                         Voir les packs d'adaptation
@@ -422,7 +422,7 @@ export default function Home() {
                     </div>
 
                     <p className="text-base text-[#0C1C3D]/70 text-center">
-                      <a href="#" className="underline hover:text-[#1e62d0] transition-colors duration-300">
+                      <a href="/configurateur" className="underline hover:text-[#1e62d0] transition-colors duration-300">
                         Laissez-vous guider par un configurateur guidé complet
                       </a>
                     </p>
