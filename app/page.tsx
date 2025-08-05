@@ -15,6 +15,26 @@ export default function Home() {
   const [miniConfigCarAnimated, setMiniConfigCarAnimated] = useState(false);
   const [selectedObjective, setSelectedObjective] = useState('');
   const [vehicleInfo, setVehicleInfo] = useState('');
+  const [selectedVehicle, setSelectedVehicle] = useState('');
+  const [customVehicle, setCustomVehicle] = useState('');
+
+  // Véhicules typiques du marché TPMR
+  const tpmrVehicles = [
+    { id: 'partner', name: 'Peugeot Partner', category: 'Camionnette' },
+    { id: 'berlingo', name: 'Citroën Berlingo', category: 'Camionnette' },
+    { id: 'kangoo', name: 'Renault Kangoo', category: 'Camionnette' },
+    { id: 'doblo', name: 'Fiat Doblò', category: 'Camionnette' },
+    { id: 'caddy', name: 'Volkswagen Caddy', category: 'Camionnette' },
+    { id: 'transit', name: 'Ford Transit Connect', category: 'Camionnette' },
+    { id: 'vivaro', name: 'Opel Vivaro', category: 'Camionnette' },
+    { id: 'trafic', name: 'Renault Trafic', category: 'Camionnette' },
+    { id: 'master', name: 'Renault Master', category: 'Camionnette' },
+    { id: 'boxer', name: 'Peugeot Boxer', category: 'Camionnette' },
+    { id: 'jumper', name: 'Citroën Jumper', category: 'Camionnette' },
+    { id: 'sprinter', name: 'Mercedes Sprinter', category: 'Camionnette' },
+    { id: 'ducato', name: 'Fiat Ducato', category: 'Camionnette' },
+    { id: 'custom', name: 'Autre véhicule', category: 'Personnalisé' }
+  ];
 
   useEffect(() => {
     let ticking = false;
@@ -427,13 +447,62 @@ export default function Home() {
                       <label className="block text-lg font-semibold text-[#0C1C3D] mb-3 text-center lg:text-left">
                         Véhicule concerné <span className="text-sm font-normal">(optionnel)</span>
                       </label>
-                      <input
-                        type="text"
-                        value={vehicleInfo}
-                        onChange={(e) => setVehicleInfo(e.target.value)}
-                        placeholder="Marque, modèle, année..."
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white/80 backdrop-blur-sm text-[#0C1C3D] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#1e62d0] focus:border-transparent"
-                      />
+                      
+                      {/* Sélection du véhicule */}
+                      <div className="space-y-3">
+                        <select
+                          value={selectedVehicle}
+                          onChange={(e) => {
+                            setSelectedVehicle(e.target.value);
+                            if (e.target.value === 'custom') {
+                              setVehicleInfo('');
+                            } else {
+                              const vehicle = tpmrVehicles.find(v => v.id === e.target.value);
+                              setVehicleInfo(vehicle ? vehicle.name : '');
+                            }
+                          }}
+                          className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white/80 backdrop-blur-sm text-[#0C1C3D] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#1e62d0] focus:border-transparent"
+                        >
+                          <option value="">Sélectionnez un véhicule type</option>
+                          <optgroup label="Camionnettes populaires TPMR">
+                            {tpmrVehicles.filter(v => v.category === 'Camionnette' && v.id !== 'custom').map(vehicle => (
+                              <option key={vehicle.id} value={vehicle.id}>
+                                {vehicle.name}
+                              </option>
+                            ))}
+                          </optgroup>
+                          <optgroup label="Autres">
+                            {tpmrVehicles.filter(v => v.id === 'custom').map(vehicle => (
+                              <option key={vehicle.id} value={vehicle.id}>
+                                {vehicle.name}
+                              </option>
+                            ))}
+                          </optgroup>
+                        </select>
+                        
+                        {/* Champ personnalisé si "Autre véhicule" est sélectionné */}
+                        {selectedVehicle === 'custom' && (
+                          <input
+                            type="text"
+                            value={customVehicle}
+                            onChange={(e) => {
+                              setCustomVehicle(e.target.value);
+                              setVehicleInfo(e.target.value);
+                            }}
+                            placeholder="Précisez votre véhicule (marque, modèle, année)..."
+                            className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white/80 backdrop-blur-sm text-[#0C1C3D] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#1e62d0] focus:border-transparent"
+                          />
+                        )}
+                        
+                        {/* Affichage du véhicule sélectionné */}
+                        {vehicleInfo && selectedVehicle !== 'custom' && (
+                          <div className="bg-[#1e62d0]/10 p-3 rounded-lg border border-[#1e62d0]/20">
+                            <p className="text-sm text-[#0C1C3D]">
+                              <span className="font-semibold">Véhicule sélectionné :</span> {vehicleInfo}
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <div className="text-center">

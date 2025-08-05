@@ -39,6 +39,26 @@ export default function ConfigurateurPage() {
     model: '',
     year: ''
   });
+  const [selectedVehicle, setSelectedVehicle] = useState('');
+  const [customVehicle, setCustomVehicle] = useState('');
+
+  // Véhicules typiques du marché TPMR
+  const tpmrVehicles = [
+    { id: 'partner', name: 'Peugeot Partner', category: 'Camionnette' },
+    { id: 'berlingo', name: 'Citroën Berlingo', category: 'Camionnette' },
+    { id: 'kangoo', name: 'Renault Kangoo', category: 'Camionnette' },
+    { id: 'doblo', name: 'Fiat Doblò', category: 'Camionnette' },
+    { id: 'caddy', name: 'Volkswagen Caddy', category: 'Camionnette' },
+    { id: 'transit', name: 'Ford Transit Connect', category: 'Camionnette' },
+    { id: 'vivaro', name: 'Opel Vivaro', category: 'Camionnette' },
+    { id: 'trafic', name: 'Renault Trafic', category: 'Camionnette' },
+    { id: 'master', name: 'Renault Master', category: 'Camionnette' },
+    { id: 'boxer', name: 'Peugeot Boxer', category: 'Camionnette' },
+    { id: 'jumper', name: 'Citroën Jumper', category: 'Camionnette' },
+    { id: 'sprinter', name: 'Mercedes Sprinter', category: 'Camionnette' },
+    { id: 'ducato', name: 'Fiat Ducato', category: 'Camionnette' },
+    { id: 'custom', name: 'Autre véhicule', category: 'Personnalisé' }
+  ];
 
   // Récupérer les paramètres de l'URL au chargement
   useEffect(() => {
@@ -286,45 +306,118 @@ export default function ConfigurateurPage() {
               </p>
             </div>
             
-            <div className="max-w-2xl mx-auto space-y-6">
-              <div className="grid md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-[#0C1C3D] mb-2">
-                    Marque
-                  </label>
-                  <input
-                    type="text"
-                    value={vehicleInfo.brand}
-                    onChange={(e) => setVehicleInfo(prev => ({ ...prev, brand: e.target.value }))}
-                    placeholder="Ex: Renault"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e62d0]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-[#0C1C3D] mb-2">
-                    Modèle
-                  </label>
-                  <input
-                    type="text"
-                    value={vehicleInfo.model}
-                    onChange={(e) => setVehicleInfo(prev => ({ ...prev, model: e.target.value }))}
-                    placeholder="Ex: Kangoo"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e62d0]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-[#0C1C3D] mb-2">
-                    Année
-                  </label>
-                  <input
-                    type="text"
-                    value={vehicleInfo.year}
-                    onChange={(e) => setVehicleInfo(prev => ({ ...prev, year: e.target.value }))}
-                    placeholder="Ex: 2020"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e62d0]"
-                  />
+            <div className="max-w-4xl mx-auto space-y-6">
+              {/* Sélection rapide de véhicules types */}
+              <div>
+                <label className="block text-lg font-semibold text-[#0C1C3D] mb-4">
+                  Véhicule type TPMR
+                </label>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <select
+                      value={selectedVehicle}
+                      onChange={(e) => {
+                        setSelectedVehicle(e.target.value);
+                        if (e.target.value === 'custom') {
+                          setVehicleInfo({ brand: '', model: '', year: '' });
+                        } else {
+                          const vehicle = tpmrVehicles.find(v => v.id === e.target.value);
+                          if (vehicle) {
+                            const parts = vehicle.name.split(' ');
+                            setVehicleInfo({
+                              brand: parts[0] || '',
+                              model: parts.slice(1).join(' ') || '',
+                              year: ''
+                            });
+                          }
+                        }
+                      }}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e62d0] bg-white"
+                    >
+                      <option value="">Sélectionnez un véhicule type</option>
+                      <optgroup label="Camionnettes populaires TPMR">
+                        {tpmrVehicles.filter(v => v.category === 'Camionnette' && v.id !== 'custom').map(vehicle => (
+                          <option key={vehicle.id} value={vehicle.id}>
+                            {vehicle.name}
+                          </option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Autres">
+                        {tpmrVehicles.filter(v => v.id === 'custom').map(vehicle => (
+                          <option key={vehicle.id} value={vehicle.id}>
+                            {vehicle.name}
+                          </option>
+                        ))}
+                      </optgroup>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <input
+                      type="text"
+                      value={vehicleInfo.year}
+                      onChange={(e) => setVehicleInfo(prev => ({ ...prev, year: e.target.value }))}
+                      placeholder="Année (ex: 2020)"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e62d0] bg-white"
+                    />
+                  </div>
                 </div>
               </div>
+
+              {/* Saisie manuelle si véhicule personnalisé */}
+              {selectedVehicle === 'custom' && (
+                <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                  <h4 className="text-lg font-semibold text-[#0C1C3D] mb-4">Saisie manuelle</h4>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-[#0C1C3D] mb-2">
+                        Marque
+                      </label>
+                      <input
+                        type="text"
+                        value={vehicleInfo.brand}
+                        onChange={(e) => setVehicleInfo(prev => ({ ...prev, brand: e.target.value }))}
+                        placeholder="Ex: Renault"
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e62d0] bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-[#0C1C3D] mb-2">
+                        Modèle
+                      </label>
+                      <input
+                        type="text"
+                        value={vehicleInfo.model}
+                        onChange={(e) => setVehicleInfo(prev => ({ ...prev, model: e.target.value }))}
+                        placeholder="Ex: Kangoo"
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e62d0] bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-[#0C1C3D] mb-2">
+                        Année
+                      </label>
+                      <input
+                        type="text"
+                        value={vehicleInfo.year}
+                        onChange={(e) => setVehicleInfo(prev => ({ ...prev, year: e.target.value }))}
+                        placeholder="Ex: 2020"
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e62d0] bg-white"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Affichage du véhicule sélectionné */}
+              {vehicleInfo.brand && (
+                <div className="bg-[#1e62d0]/10 p-4 rounded-lg border border-[#1e62d0]/20">
+                  <h4 className="font-semibold text-[#0C1C3D] mb-2">Véhicule sélectionné :</h4>
+                  <p className="text-[#0C1C3D]">
+                    {vehicleInfo.brand} {vehicleInfo.model} {vehicleInfo.year && `(${vehicleInfo.year})`}
+                  </p>
+                </div>
+              )}
               
               <div className="text-center space-x-4">
                 <button
