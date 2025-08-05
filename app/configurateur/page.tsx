@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 interface ConfigurateurStep {
@@ -39,6 +39,39 @@ export default function ConfigurateurPage() {
     model: '',
     year: ''
   });
+
+  // Récupérer les paramètres de l'URL au chargement
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const objective = urlParams.get('objective');
+      const vehicle = urlParams.get('vehicle');
+      
+      if (objective) {
+        setSelectedObjective(objective);
+        // Si un objectif est fourni, passer directement à l'étape 2
+        setCurrentStep(2);
+      }
+      
+      if (vehicle) {
+        // Essayer de parser les informations du véhicule
+        const vehicleParts = vehicle.split(' ');
+        if (vehicleParts.length >= 2) {
+          setVehicleInfo({
+            brand: vehicleParts[0] || '',
+            model: vehicleParts[1] || '',
+            year: vehicleParts[2] || ''
+          });
+        } else {
+          setVehicleInfo({
+            brand: vehicle,
+            model: '',
+            year: ''
+          });
+        }
+      }
+    }
+  }, []);
   const [selectedPacks, setSelectedPacks] = useState<string[]>([]);
   const [comfortLevel, setComfortLevel] = useState('');
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
@@ -159,6 +192,15 @@ export default function ConfigurateurPage() {
       options: selectedOptions,
       contact: userContact
     });
+    
+    // Ici vous pourriez ajouter la logique pour envoyer les données
+    alert('Votre demande a été envoyée ! Nous vous contacterons dans les plus brefs délais.');
+  };
+
+  const handlePreviousStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
   };
 
   const renderStepContent = () => {
@@ -220,6 +262,15 @@ export default function ConfigurateurPage() {
                 </button>
               ))}
             </div>
+            
+            <div className="text-center mt-8">
+              <button
+                onClick={handlePreviousStep}
+                className="bg-gray-300 text-[#0C1C3D] px-6 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors mr-4"
+              >
+                ← Précédent
+              </button>
+            </div>
           </div>
         );
 
@@ -275,7 +326,13 @@ export default function ConfigurateurPage() {
                 </div>
               </div>
               
-              <div className="text-center">
+              <div className="text-center space-x-4">
+                <button
+                  onClick={handlePreviousStep}
+                  className="bg-gray-300 text-[#0C1C3D] px-6 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors"
+                >
+                  ← Précédent
+                </button>
                 <button
                   onClick={() => setCurrentStep(4)}
                   className="bg-[#f2cb05] text-[#1e62d0] px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#e6c205] transition-colors"
@@ -592,8 +649,8 @@ export default function ConfigurateurPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
+        {/* Header */}
+        <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">

@@ -13,6 +13,8 @@ export default function Home() {
   const [carAnimation, setCarAnimation] = useState('idle');
   const [hasAnimated, setHasAnimated] = useState(false);
   const [miniConfigCarAnimated, setMiniConfigCarAnimated] = useState(false);
+  const [selectedObjective, setSelectedObjective] = useState('');
+  const [vehicleInfo, setVehicleInfo] = useState('');
 
   useEffect(() => {
     let ticking = false;
@@ -368,7 +370,7 @@ export default function Home() {
                 </div>
 
                 <div className="bg-white/10 backdrop-blur-sm p-8 rounded-xl border border-white/20 shadow-xl">
-                  <form className="space-y-6">
+                  <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                     <div>
                       <label className="block text-lg font-semibold text-[#0C1C3D] mb-4 text-center lg:text-left">
                         Objectif principal
@@ -376,25 +378,45 @@ export default function Home() {
                       <div className="grid grid-cols-2 gap-3">
                         <button
                           type="button"
-                          className="p-4 rounded-lg border-2 border-gray-200 bg-white/80 backdrop-blur-sm text-[#0C1C3D] transition-all duration-300 hover:border-[#1e62d0] hover:bg-[#1e62d0]/10 focus:outline-none focus:ring-2 focus:ring-[#1e62d0] text-sm font-medium"
+                          onClick={() => setSelectedObjective('transport')}
+                          className={`p-4 rounded-lg border-2 transition-all duration-300 text-sm font-medium ${
+                            selectedObjective === 'transport'
+                              ? 'border-[#1e62d0] bg-[#1e62d0]/10 text-[#1e62d0]'
+                              : 'border-gray-200 bg-white/80 backdrop-blur-sm text-[#0C1C3D] hover:border-[#1e62d0] hover:bg-[#1e62d0]/10'
+                          } focus:outline-none focus:ring-2 focus:ring-[#1e62d0]`}
                         >
                           Transporter une personne en fauteuil
                         </button>
                         <button
                           type="button"
-                          className="p-4 rounded-lg border-2 border-gray-200 bg-white/80 backdrop-blur-sm text-[#0C1C3D] transition-all duration-300 hover:border-[#1e62d0] hover:bg-[#1e62d0]/10 focus:outline-none focus:ring-2 focus:ring-[#1e62d0] text-sm font-medium"
+                          onClick={() => setSelectedObjective('conduite')}
+                          className={`p-4 rounded-lg border-2 transition-all duration-300 text-sm font-medium ${
+                            selectedObjective === 'conduite'
+                              ? 'border-[#1e62d0] bg-[#1e62d0]/10 text-[#1e62d0]'
+                              : 'border-gray-200 bg-white/80 backdrop-blur-sm text-[#0C1C3D] hover:border-[#1e62d0] hover:bg-[#1e62d0]/10'
+                          } focus:outline-none focus:ring-2 focus:ring-[#1e62d0]`}
                         >
                           Conduire avec un handicap
                         </button>
                         <button
                           type="button"
-                          className="p-4 rounded-lg border-2 border-gray-200 bg-white/80 backdrop-blur-sm text-[#0C1C3D] transition-all duration-300 hover:border-[#1e62d0] hover:bg-[#1e62d0]/10 focus:outline-none focus:ring-2 focus:ring-[#1e62d0] text-sm font-medium"
+                          onClick={() => setSelectedObjective('acces')}
+                          className={`p-4 rounded-lg border-2 transition-all duration-300 text-sm font-medium ${
+                            selectedObjective === 'acces'
+                              ? 'border-[#1e62d0] bg-[#1e62d0]/10 text-[#1e62d0]'
+                              : 'border-gray-200 bg-white/80 backdrop-blur-sm text-[#0C1C3D] hover:border-[#1e62d0] hover:bg-[#1e62d0]/10'
+                          } focus:outline-none focus:ring-2 focus:ring-[#1e62d0]`}
                         >
                           Accéder plus facilement au véhicule
                         </button>
                         <button
                           type="button"
-                          className="p-4 rounded-lg border-2 border-gray-200 bg-white/80 backdrop-blur-sm text-[#0C1C3D] transition-all duration-300 hover:border-[#1e62d0] hover:bg-[#1e62d0]/10 focus:outline-none focus:ring-2 focus:ring-[#1e62d0] text-sm font-medium"
+                          onClick={() => setSelectedObjective('pro')}
+                          className={`p-4 rounded-lg border-2 transition-all duration-300 text-sm font-medium ${
+                            selectedObjective === 'pro'
+                              ? 'border-[#1e62d0] bg-[#1e62d0]/10 text-[#1e62d0]'
+                              : 'border-gray-200 bg-white/80 backdrop-blur-sm text-[#0C1C3D] hover:border-[#1e62d0] hover:bg-[#1e62d0]/10'
+                          } focus:outline-none focus:ring-2 focus:ring-[#1e62d0]`}
                         >
                           Adapter un véhicule pour un usage pro
                         </button>
@@ -407,6 +429,8 @@ export default function Home() {
                       </label>
                       <input
                         type="text"
+                        value={vehicleInfo}
+                        onChange={(e) => setVehicleInfo(e.target.value)}
                         placeholder="Marque, modèle, année..."
                         className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white/80 backdrop-blur-sm text-[#0C1C3D] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#1e62d0] focus:border-transparent"
                       />
@@ -414,10 +438,14 @@ export default function Home() {
 
                     <div className="text-center">
                       <a
-                        href="/configurateur"
-                        className="inline-block bg-[#FFD700] text-[#0C1C3D] px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-300 hover:bg-[#FFD700]/90 shadow-lg w-full sm:w-auto"
+                        href={`/configurateur?objective=${selectedObjective}&vehicle=${encodeURIComponent(vehicleInfo)}`}
+                        className={`inline-block px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-300 shadow-lg w-full sm:w-auto ${
+                          selectedObjective
+                            ? 'bg-[#FFD700] text-[#0C1C3D] hover:bg-[#FFD700]/90'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
                       >
-                        Voir les packs d'adaptation
+                        {selectedObjective ? 'Voir les packs d\'adaptation' : 'Sélectionnez un objectif'}
                       </a>
                     </div>
 
