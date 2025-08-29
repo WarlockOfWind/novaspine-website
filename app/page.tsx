@@ -287,6 +287,88 @@ export default function Home() {
             </div>
           </div>
         </div>
+        
+        {/* Section Innovation - Produit Polyaxial en vedette */}
+        <div id="innovation" className="mb-20 bg-gradient-to-r from-[#F0F0F0] to-white p-12 rounded-2xl shadow-lg">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Image du produit */}
+            <div className="flex justify-center">
+              <div className="relative">
+                <Image
+                  src="/polyaxial.png"
+                  alt="Vis pédiculaires SOCORE Polyaxial - Implants rachidiens de haute précision"
+                  width={400}
+                  height={300}
+                  className="rounded-xl shadow-2xl"
+                />
+                <div className="absolute -top-4 -right-4 bg-[#F5C333] text-white px-4 py-2 rounded-full text-sm font-bold">
+                  NOUVEAU
+                </div>
+              </div>
+            </div>
+            
+            {/* Description technique */}
+            <div>
+              <h3 className="text-3xl font-bold mb-6 text-[#333333]">
+                SOCORE Polyaxial
+              </h3>
+              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                Vis pédiculaires de dernière génération offrant une insertion simple, sûre et rapide 
+                avec un ancrage osseux optimal pour des montages solides.
+              </p>
+              
+              {/* Caractéristiques techniques */}
+              <div className="space-y-4">
+                <div className="flex items-start">
+                  <div className="w-3 h-3 bg-[#F5C333] rounded-full mt-2 mr-4 flex-shrink-0"></div>
+                  <div>
+                    <h4 className="font-bold text-[#F5C333] mb-1">INSERTION SIMPLE, SÛRE ET RAPIDE</h4>
+                    <p className="text-gray-700 text-sm">Les vis pédiculaires SOCORE ont un double et quadruple filetage avec une extrémité mousse filetée auto-taraudante.</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="w-3 h-3 bg-[#F5C333] rounded-full mt-2 mr-4 flex-shrink-0"></div>
+                  <div>
+                    <h4 className="font-bold text-[#F5C333] mb-1">ANCRAGE OSSEUX</h4>
+                    <p className="text-gray-700 text-sm">La partie pédiculaire des vis présente un filetage cortical, renforçant la tenue osseuse.</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="w-3 h-3 bg-[#F5C333] rounded-full mt-2 mr-4 flex-shrink-0"></div>
+                  <div>
+                    <h4 className="font-bold text-[#F5C333] mb-1">COL RENFORCÉ</h4>
+                    <p className="text-gray-700 text-sm">Le col de la vis sous la tête est renforcé par un large diamètre et une sortie de filetage conique pour augmenter sa résistance.</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="w-3 h-3 bg-[#F5C333] rounded-full mt-2 mr-4 flex-shrink-0"></div>
+                  <div>
+                    <h4 className="font-bold text-[#F5C333] mb-1">TÊTE RÉSISTANTE LOW PROFILE</h4>
+                    <p className="text-gray-700 text-sm">La tête low profile permet une implantation dans les régions thoracique et lombaire avec une résistance optimale pour des montages solides.</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="w-3 h-3 bg-[#F5C333] rounded-full mt-2 mr-4 flex-shrink-0"></div>
+                  <div>
+                    <h4 className="font-bold text-[#F5C333] mb-1">PROTECTION DES TISSUS MOUS</h4>
+                    <p className="text-gray-700 text-sm">Les têtes de vis sont rayonnées, sans arêtes vives, respectant ainsi les tissus mous.</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* CTA */}
+              <div className="mt-8">
+                <a href="#contact" className="inline-block bg-[#F5C333] text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#4A90E2] transition-all duration-300 transform hover:scale-105 shadow-lg">
+                  Demander une documentation
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* 4. Section dynamique "Actualité & formation" */}
