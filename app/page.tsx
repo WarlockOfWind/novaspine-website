@@ -127,19 +127,23 @@ export default function Home() {
               </div>
             </div>
             
-            {/* Colonne droite - Visuel amélioré */}
+            {/* Colonne droite - Visuel */}
             <div className="flex justify-center lg:justify-end">
-              <div className="relative w-full max-w-lg h-96">
+              <div className="relative w-full max-w-2xl h-[500px]">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#F5C333]/20 to-[#4A90E2]/20 rounded-2xl border border-[#F5C333]/30 backdrop-blur-sm"></div>
-                <div className="absolute inset-4 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                <div className="absolute inset-6 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center">
                   <div className="text-center text-white">
-                    <div className="w-20 h-20 bg-[#F5C333] rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                      </svg>
+                    <div className="w-80 h-80 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-8 p-8">
+                      <Image
+                        src="/polyaxial.png"
+                        alt="Vis pédiculaires SOCORE Polyaxial - Innovation NovaSpine"
+                        width={280}
+                        height={280}
+                        className="rounded-lg"
+                      />
                     </div>
-                    <p className="text-lg font-medium">Technologie de précision</p>
-                    <p className="text-sm opacity-75">Chirurgie rachidienne avancée</p>
+                    <p className="text-2xl font-medium">Technologie de précision</p>
+                    <p className="text-lg opacity-75">Chirurgie rachidienne avancée</p>
                   </div>
                 </div>
               </div>
