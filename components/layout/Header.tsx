@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,32 +13,43 @@ export default function Header() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
-              <Image
-                src="/Logo-Access-Ability-1.png"
-                alt="Access-Ability - Aménagement de véhicules accessibles PMR"
-                width={200}
-                height={50}
-                className="h-10 w-auto logo-text"
-                priority
-              />
+              <span className="text-2xl font-bold text-white">
+                NovaSpine
+              </span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
-            <Link href="/vehicules" className="text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium transition-colors uppercase tracking-wide nav-link">
-              VEHICULES
+            <Link href="#societe" className="text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium transition-colors uppercase tracking-wide nav-link">
+              SOCIÉTÉ
             </Link>
-            <Link href="/options-produits" className="text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium transition-colors uppercase tracking-wide nav-link">
-              OPTIONS ET PRODUITS
+            <Link href="#produits" className="text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium transition-colors uppercase tracking-wide nav-link">
+              PRODUITS
             </Link>
-            <Link href="/ressources" className="text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium transition-colors uppercase tracking-wide nav-link">
+            <Link href="#innovation" className="text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium transition-colors uppercase tracking-wide nav-link">
+              INNOVATION
+            </Link>
+            <Link href="#ressources" className="text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium transition-colors uppercase tracking-wide nav-link">
               RESSOURCES
             </Link>
-            <Link href="/about" className="text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium transition-colors uppercase tracking-wide nav-link">
-              A PROPOS
+            <Link href="#actualites" className="text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium transition-colors uppercase tracking-wide nav-link">
+              ACTUALITÉS
+            </Link>
+            <Link href="#contact" className="text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium transition-colors uppercase tracking-wide nav-link">
+              CONTACT
             </Link>
           </nav>
+
+          {/* CTA Button */}
+          <div className="hidden md:block">
+            <Link 
+              href="#documentation" 
+              className="bg-white text-[#1e62d0] px-6 py-2 rounded-full font-semibold text-sm hover:bg-gray-100 transition-colors"
+            >
+              Demander une documentation
+            </Link>
+          </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
@@ -62,18 +72,27 @@ export default function Header() {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-teal-700/95 backdrop-blur-sm border-t border-blue-300/20 rounded-b-lg">
-              <Link href="/vehicules" className="text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium transition-colors uppercase tracking-wide nav-link">
-                VEHICULES
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-[#0C1C3D]/95 backdrop-blur-sm border-t border-blue-300/20 rounded-b-lg">
+              <Link href="#societe" className="text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium transition-colors uppercase tracking-wide nav-link">
+                SOCIÉTÉ
               </Link>
-              <Link href="/options-produits" className="text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium transition-colors uppercase tracking-wide nav-link">
-                OPTIONS ET PRODUITS
+              <Link href="#produits" className="text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium transition-colors uppercase tracking-wide nav-link">
+                PRODUITS
               </Link>
-              <Link href="/ressources" className="text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium transition-colors uppercase tracking-wide nav-link">
+              <Link href="#innovation" className="text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium transition-colors uppercase tracking-wide nav-link">
+                INNOVATION
+              </Link>
+              <Link href="#ressources" className="text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium transition-colors uppercase tracking-wide nav-link">
                 RESSOURCES
               </Link>
-              <Link href="/about" className="text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium transition-colors uppercase tracking-wide nav-link">
-                A PROPOS
+              <Link href="#actualites" className="text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium transition-colors uppercase tracking-wide nav-link">
+                ACTUALITÉS
+              </Link>
+              <Link href="#contact" className="text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium transition-colors uppercase tracking-wide nav-link">
+                CONTACT
+              </Link>
+              <Link href="#documentation" className="text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium transition-colors uppercase tracking-wide nav-link">
+                DEMANDER UNE DOCUMENTATION
               </Link>
             </div>
           </div>

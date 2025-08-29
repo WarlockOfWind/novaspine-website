@@ -1,872 +1,520 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 export default function Home() {
-  const parallaxRef = useRef<HTMLDivElement>(null);
-  const heroTextRef = useRef<HTMLDivElement>(null);
-  const heroImageRef = useRef<HTMLDivElement>(null);
-  const miniConfigRef = useRef<HTMLDivElement>(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [carAnimation, setCarAnimation] = useState('idle');
-  const [hasAnimated, setHasAnimated] = useState(false);
-  const [miniConfigCarAnimated, setMiniConfigCarAnimated] = useState(false);
-  const [selectedObjective, setSelectedObjective] = useState('');
-  const [vehicleInfo, setVehicleInfo] = useState('');
-  const [selectedVehicle, setSelectedVehicle] = useState('');
-  const [customVehicle, setCustomVehicle] = useState('');
-
-  // Véhicules typiques du marché TPMR
-  const tpmrVehicles = [
-    { id: 'partner', name: 'Peugeot Partner', category: 'Camionnette' },
-    { id: 'berlingo', name: 'Citroën Berlingo', category: 'Camionnette' },
-    { id: 'kangoo', name: 'Renault Kangoo', category: 'Camionnette' },
-    { id: 'doblo', name: 'Fiat Doblò', category: 'Camionnette' },
-    { id: 'caddy', name: 'Volkswagen Caddy', category: 'Camionnette' },
-    { id: 'transit', name: 'Ford Transit Connect', category: 'Camionnette' },
-    { id: 'vivaro', name: 'Opel Vivaro', category: 'Camionnette' },
-    { id: 'trafic', name: 'Renault Trafic', category: 'Camionnette' },
-    { id: 'master', name: 'Renault Master', category: 'Camionnette' },
-    { id: 'boxer', name: 'Peugeot Boxer', category: 'Camionnette' },
-    { id: 'jumper', name: 'Citroën Jumper', category: 'Camionnette' },
-    { id: 'sprinter', name: 'Mercedes Sprinter', category: 'Camionnette' },
-    { id: 'ducato', name: 'Fiat Ducato', category: 'Camionnette' },
-    { id: 'custom', name: 'Autre véhicule', category: 'Personnalisé' }
-  ];
 
   useEffect(() => {
-    let ticking = false;
-
     const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const scrolled = window.pageYOffset;
-          
-          // Changement de style du header
-          if (scrolled > 300) {
-            setIsScrolled(true);
-          } else {
-            setIsScrolled(false);
-          }
-
-          // Effet parallax principal - optimisé
-          if (parallaxRef.current) {
-            const rate = scrolled * -0.3; // Réduit pour un effet plus subtil
-            parallaxRef.current.style.transform = `translateY(${rate}px)`;
-          }
-
-          // Parallaxe pour le texte - effet plus doux
-          if (heroTextRef.current) {
-            const rate = scrolled * 0.15;
-            heroTextRef.current.style.transform = `translateY(${rate}px)`;
-          }
-
-          // Parallaxe pour l'image - effet inversé
-          if (heroImageRef.current) {
-            const rate = scrolled * -0.1;
-            heroImageRef.current.style.transform = `translateY(${rate}px)`;
-          }
-
-          // Effet sur le titre et sous-titre
-          const maxScroll = 300;
-          const progress = Math.min(scrolled / maxScroll, 1);
-          setScrollProgress(progress);
-
-          // Animation de la voiture après un court scroll - simplifiée
-          if (scrolled > 75 && !hasAnimated) {
-            setHasAnimated(true);
-            setCarAnimation('drive-away');
-          }
-
-          ticking = false;
-        });
-        ticking = true;
+      const scrolled = window.pageYOffset;
+      if (scrolled > 100) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
       }
     };
 
-    // Test initial
-    handleScroll();
-    
     window.addEventListener('scroll', handleScroll, { passive: true });
-    
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Intersection Observer pour l'animation du mini configurateur
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !miniConfigCarAnimated) {
-            setMiniConfigCarAnimated(true);
-          }
-        });
-      },
-      {
-        threshold: 0.3, // Déclenche quand 30% de l'élément est visible
-        rootMargin: '0px 0px -100px 0px' // Déclenche un peu avant
-      }
-    );
-
-    if (miniConfigRef.current) {
-      observer.observe(miniConfigRef.current);
-    }
-
-    return () => {
-      if (miniConfigRef.current) {
-        observer.unobserve(miniConfigRef.current);
-      }
-    };
-  }, [miniConfigCarAnimated]);
-
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* Fond parallaxe - optimisé */}
-      <div ref={parallaxRef} className="parallax-bg">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1e62d0] via-[#4b94e6] to-[#d9e6f8]"></div>
-        <Image
-          src="/abstract-bluish-paint-background-wallpaper.png"
-          alt="Fond abstrait bleu"
-          fill
-          className="object-cover object-top opacity-60"
-          priority
-        />
-        {/* Couche de vagues supplémentaires */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 to-white/40"></div>
-      </div>
-
-      {/* Contenu principal */}
-      <div className="relative z-10 pt-32">
-        {/* 1. Header fixe */}
-        <header className={`py-2 px-8 fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled 
-            ? 'bg-white/95 backdrop-blur-sm shadow-lg header-scrolled' 
-            : 'bg-transparent'
-        }`}>
-          <div className="max-w-6xl mx-auto flex justify-between items-center">
-            <a href="/" className="logo-container">
-              <Image
-                src="/Logo-Access-Ability-1.png"
-                alt="AccessAbility Logo"
-                width={1200}
-                height={640}
-                className="h-20 w-auto"
-                priority
-              />
-            </a>
-            <div className="flex items-center gap-8">
-              <nav className="flex gap-8">
-                <a 
-                  href="/configurateur" 
-                  className={`text-xl font-medium transition-all duration-300 ${
-                    isScrolled 
-                      ? 'text-[#0C1C3D] hover:text-[#1e62d0]' 
-                      : 'text-white hover:opacity-80'
-                  }`}
-                >
-                Configurateur
-                </a>
-                <a 
-                  href="/solutions" 
-                  className={`text-xl font-medium transition-all duration-300 ${
-                    isScrolled 
-                      ? 'text-[#0C1C3D] hover:text-[#1e62d0]' 
-                      : 'text-white hover:opacity-80'
-                  }`}
-                >
-                  Solutions
-                </a>
-                <a 
-                  href="/a-propos" 
-                  className={`text-xl font-medium transition-all duration-300 ${
-                    isScrolled 
-                      ? 'text-[#0C1C3D] hover:text-[#1e62d0]' 
-                      : 'text-white hover:opacity-80'
-                  }`}
-                >
-                  À propos
-                </a>
-                <a 
-                  href="/contact" 
-                  className={`text-xl font-medium transition-all duration-300 ${
-                    isScrolled 
-                      ? 'text-[#0C1C3D] hover:text-[#1e62d0]' 
-                      : 'text-white hover:opacity-80'
-                  }`}
-                >
-                  Contact
-                </a>
-              </nav>
-              
-              {/* CTA Header */}
-              <a 
-                href="#devis-express" 
-                className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
-                  isScrolled 
-                    ? 'bg-[#f2cb05] text-[#1e62d0] hover:bg-[#e6c205]' 
-                    : 'bg-[#f2cb05] text-[#1e62d0] hover:bg-[#e6c205]'
-                }`}
-              >
-                Demander un devis
-              </a>
-              
-              {/* Icônes réseaux sociaux */}
-              <div className="flex gap-4 ml-8">
-                <a 
-                  href="https://instagram.com/accessability" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className={`transition-colors duration-300 ${
-                    isScrolled 
-                      ? 'text-[#0C1C3D] hover:text-[#f2cb05]' 
-                      : 'text-white hover:text-[#f2cb05]'
-                  }`}
-                  aria-label="Suivez-nous sur Instagram"
-                >
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                  </svg>
-                </a>
-                <a 
-                  href="https://linkedin.com/company/accessability" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className={`transition-colors duration-300 ${
-                    isScrolled 
-                      ? 'text-[#0C1C3D] hover:text-[#f2cb05]' 
-                      : 'text-white hover:text-[#f2cb05]'
-                  }`}
-                  aria-label="Suivez-nous sur LinkedIn"
-                >
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                  </svg>
-                </a>
-              </div>
-            </div>
+    <div className="relative min-h-screen bg-white">
+      {/* Header fixe */}
+      <header className={`py-4 px-8 fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-white shadow-lg' 
+          : 'bg-white'
+      }`}>
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <div className="flex items-center">
+            {/* Logo NovaSpine */}
+            <Image
+              src="/logo_novaspine-1-1.jpg"
+              alt="NovaSpine Logo"
+              width={140}
+              height={45}
+              className="h-11 w-auto"
+              priority
+            />
           </div>
-        </header>
-
-        {/* 2. Hero section - avec parallax amélioré */}
-        <section className="relative py-16 px-8 min-h-[70vh] flex items-center">
-          <div className="max-w-6xl mx-auto w-full">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              {/* Colonne gauche - Texte avec parallaxe */}
-              <div ref={heroTextRef} className="text-left text-white">
-                <h1 className="text-6xl font-bold mb-6 drop-shadow-lg leading-tight">
-                  Des solutions de mobilité<br />
-                  pour l'autonomie
-                </h1>
-                <p className="text-xl mb-8 opacity-90 drop-shadow-md">
-                  Configurez ou commandez un véhicule accessible adapté à vos besoins.
-                </p>
-                
-                {/* CTA Hero */}
-                <div className="space-y-4 mb-8">
-                  <a 
-                    href="/configurateur" 
-                    className="block w-full bg-[#f2cb05] text-[#1e62d0] px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#e6c205] transition-all duration-300 transform hover:scale-105 shadow-lg text-center"
-                  >
-                    Configurer mon véhicule
-                  </a>
-                  <a 
-                    href="#devis-express" 
-                    className="block w-full bg-white/20 backdrop-blur-sm text-white border-2 border-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-center"
-                  >
-                    Obtenir un devis personnalisé
-                  </a>
-                </div>
-              </div>
-              
-              {/* Colonne droite - Image avec parallaxe */}
-              <div ref={heroImageRef} className="flex justify-center lg:justify-end overflow-hidden w-full">
-                <div className="relative w-full max-w-3xl">
-                  <Image
-                    src="/heroimage.png"
-                    alt="Véhicule accessible AccessAbility"
-                    width={1000}
-                    height={800}
-                    className={`w-full max-w-2xl h-auto drop-shadow-2xl scale-x-[-1] transition-all duration-700 ${
-                      carAnimation === 'drive-away' ? 'animate-drive-away' : ''
-                    }`}
-                    priority
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 3. Bloc "Segmentation des besoins" */}
-        <section className="relative py-16 px-8 bg-white">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-12 text-[#0C1C3D]">
-              Quel est votre besoin ?
-            </h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              <a href="/configurateur" className="group">
-                <div className="bg-white shadow-xl border border-gray-100 p-8 rounded-xl hover:transform hover:scale-105 transition-all duration-300 cursor-pointer hover:shadow-2xl h-full flex flex-col">
-                  <div className="w-20 h-20 bg-gradient-to-br from-[#1e62d0] to-[#4b94e6] rounded-xl flex items-center justify-center mb-6 mx-auto group-hover:from-[#4b94e6] group-hover:to-[#1e62d0] transition-all duration-300 shadow-lg transform group-hover:rotate-3">
-                    <div className="w-8 h-8 bg-white/20 rounded-lg transform group-hover:scale-110 transition-transform duration-300"></div>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-4 text-[#0C1C3D] text-center flex-grow">Je souhaite accéder ou conduire moi-même</h3>
-                  <p className="text-gray-600 text-center mb-6 flex-grow">
-                    Solutions pour conduire en autonomie ou accéder facilement à votre véhicule
-                  </p>
-                  <div className="text-center mt-auto">
-                    <span className="inline-block bg-[#f2cb05] text-[#1e62d0] px-6 py-3 rounded-full font-semibold text-sm hover:bg-[#e6c205] transition-colors shadow-lg">
-                      Découvrir les solutions
-                    </span>
-                  </div>
-                </div>
-              </a>
-              
-              <a href="/configurateur" className="group">
-                <div className="bg-white shadow-xl border border-gray-100 p-8 rounded-xl hover:transform hover:scale-105 transition-all duration-300 cursor-pointer hover:shadow-2xl h-full flex flex-col">
-                  <div className="w-20 h-20 bg-gradient-to-br from-[#4b94e6] to-[#1e62d0] rounded-xl flex items-center justify-center mb-6 mx-auto group-hover:from-[#1e62d0] group-hover:to-[#4b94e6] transition-all duration-300 shadow-lg transform group-hover:-rotate-3">
-                    <div className="w-6 h-6 bg-white/20 rounded-full transform group-hover:scale-110 transition-transform duration-300"></div>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-4 text-[#0C1C3D] text-center flex-grow">Je transporte une personne en fauteuil</h3>
-                  <p className="text-gray-600 text-center mb-6 flex-grow">
-                    Aménagements pour transporter confortablement et en sécurité
-                  </p>
-                  <div className="text-center mt-auto">
-                    <span className="inline-block bg-[#f2cb05] text-[#1e62d0] px-6 py-3 rounded-full font-semibold text-sm hover:bg-[#e6c205] transition-colors shadow-lg">
-                      Voir les aménagements
-                    </span>
-                  </div>
-                </div>
-              </a>
-              
-              <a href="/configurateur" className="group">
-                <div className="bg-white shadow-xl border border-gray-100 p-8 rounded-xl hover:transform hover:scale-105 transition-all duration-300 cursor-pointer hover:shadow-2xl h-full flex flex-col">
-                  <div className="w-20 h-20 bg-gradient-to-br from-[#f2cb05] to-[#e6c205] rounded-xl flex items-center justify-center mb-6 mx-auto group-hover:from-[#e6c205] group-hover:to-[#f2cb05] transition-all duration-300 shadow-lg transform group-hover:rotate-6">
-                    <div className="w-8 h-6 bg-[#1e62d0]/20 rounded-md transform group-hover:scale-110 transition-transform duration-300"></div>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-4 text-[#0C1C3D] text-center flex-grow">Je suis un professionnel ou installateur</h3>
-                  <p className="text-gray-600 text-center mb-6 flex-grow">
-                    Solutions techniques et formations pour les professionnels
-                  </p>
-                  <div className="text-center mt-auto">
-                    <span className="inline-block bg-[#f2cb05] text-[#1e62d0] px-6 py-3 rounded-full font-semibold text-sm hover:bg-[#e6c205] transition-colors shadow-lg">
-                      Espace professionnel
-                    </span>
-                  </div>
-                </div>
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* 4. Bloc "Mini configurateur rapide" */}
-        <section ref={miniConfigRef} className="relative py-16 px-8 bg-[#1e62d0]/10 backdrop-blur-sm">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              {/* Colonne gauche - Image de la voiture */}
-              <div className="flex justify-center lg:justify-start">
-                <Image
-                  src="/heroimage.png"
-                  alt="Véhicule accessible AccessAbility"
-                  width={1000}
-                  height={800}
-                  className={`w-full max-w-3xl h-auto drop-shadow-2xl scale-x-[-1] ${
-                    miniConfigCarAnimated ? 'animate-car-appear' : 'opacity-0'
-                  }`}
-                  priority
-                />
-              </div>
-              
-              {/* Colonne droite - Formulaire */}
-              <div className="space-y-6">
-                <div className="text-center lg:text-left">
-                  <h2 className="text-4xl font-bold text-[#0C1C3D] mb-4">
-                    Besoin express d'adaptation ?
-                  </h2>
-                  <p className="text-xl text-[#0C1C3D]/80">
-                    2 questions → 30 sec → solutions adaptées
-                  </p>
-                </div>
-
-                <div className="bg-white/10 backdrop-blur-sm p-8 rounded-xl border border-white/20 shadow-xl">
-                  <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-                    <div>
-                      <label className="block text-lg font-semibold text-[#0C1C3D] mb-4 text-center lg:text-left">
-                        Objectif principal
-                      </label>
-                      <div className="grid grid-cols-2 gap-3">
-                        <button
-                          type="button"
-                          onClick={() => setSelectedObjective('transport')}
-                          className={`p-4 rounded-lg border-2 transition-all duration-300 text-sm font-medium ${
-                            selectedObjective === 'transport'
-                              ? 'border-[#1e62d0] bg-[#1e62d0]/10 text-[#1e62d0]'
-                              : 'border-gray-200 bg-white/80 backdrop-blur-sm text-[#0C1C3D] hover:border-[#1e62d0] hover:bg-[#1e62d0]/10'
-                          } focus:outline-none focus:ring-2 focus:ring-[#1e62d0]`}
-                        >
-                          Transporter une personne en fauteuil
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setSelectedObjective('conduite')}
-                          className={`p-4 rounded-lg border-2 transition-all duration-300 text-sm font-medium ${
-                            selectedObjective === 'conduite'
-                              ? 'border-[#1e62d0] bg-[#1e62d0]/10 text-[#1e62d0]'
-                              : 'border-gray-200 bg-white/80 backdrop-blur-sm text-[#0C1C3D] hover:border-[#1e62d0] hover:bg-[#1e62d0]/10'
-                          } focus:outline-none focus:ring-2 focus:ring-[#1e62d0]`}
-                        >
-                          Conduire avec un handicap
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setSelectedObjective('acces')}
-                          className={`p-4 rounded-lg border-2 transition-all duration-300 text-sm font-medium ${
-                            selectedObjective === 'acces'
-                              ? 'border-[#1e62d0] bg-[#1e62d0]/10 text-[#1e62d0]'
-                              : 'border-gray-200 bg-white/80 backdrop-blur-sm text-[#0C1C3D] hover:border-[#1e62d0] hover:bg-[#1e62d0]/10'
-                          } focus:outline-none focus:ring-2 focus:ring-[#1e62d0]`}
-                        >
-                          Accéder plus facilement au véhicule
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setSelectedObjective('pro')}
-                          className={`p-4 rounded-lg border-2 transition-all duration-300 text-sm font-medium ${
-                            selectedObjective === 'pro'
-                              ? 'border-[#1e62d0] bg-[#1e62d0]/10 text-[#1e62d0]'
-                              : 'border-gray-200 bg-white/80 backdrop-blur-sm text-[#0C1C3D] hover:border-[#1e62d0] hover:bg-[#1e62d0]/10'
-                          } focus:outline-none focus:ring-2 focus:ring-[#1e62d0]`}
-                        >
-                          Adapter un véhicule pour un usage pro
-                        </button>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-lg font-semibold text-[#0C1C3D] mb-3 text-center lg:text-left">
-                        Véhicule concerné <span className="text-sm font-normal">(optionnel)</span>
-                      </label>
-                      
-                      {/* Sélection du véhicule */}
-                      <div className="space-y-3">
-                        <select
-                          value={selectedVehicle}
-                          onChange={(e) => {
-                            setSelectedVehicle(e.target.value);
-                            if (e.target.value === 'custom') {
-                              setVehicleInfo('');
-                            } else {
-                              const vehicle = tpmrVehicles.find(v => v.id === e.target.value);
-                              setVehicleInfo(vehicle ? vehicle.name : '');
-                            }
-                          }}
-                          className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white/80 backdrop-blur-sm text-[#0C1C3D] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#1e62d0] focus:border-transparent"
-                        >
-                          <option value="">Sélectionnez un véhicule type</option>
-                          <optgroup label="Camionnettes populaires TPMR">
-                            {tpmrVehicles.filter(v => v.category === 'Camionnette' && v.id !== 'custom').map(vehicle => (
-                              <option key={vehicle.id} value={vehicle.id}>
-                                {vehicle.name}
-                              </option>
-                            ))}
-                          </optgroup>
-                          <optgroup label="Autres">
-                            {tpmrVehicles.filter(v => v.id === 'custom').map(vehicle => (
-                              <option key={vehicle.id} value={vehicle.id}>
-                                {vehicle.name}
-                              </option>
-                            ))}
-                          </optgroup>
-                        </select>
-                        
-                        {/* Champ personnalisé si "Autre véhicule" est sélectionné */}
-                        {selectedVehicle === 'custom' && (
-                          <input
-                            type="text"
-                            value={customVehicle}
-                            onChange={(e) => {
-                              setCustomVehicle(e.target.value);
-                              setVehicleInfo(e.target.value);
-                            }}
-                            placeholder="Précisez votre véhicule (marque, modèle, année)..."
-                            className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white/80 backdrop-blur-sm text-[#0C1C3D] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#1e62d0] focus:border-transparent"
-                          />
-                        )}
-                        
-                        {/* Affichage du véhicule sélectionné */}
-                        {vehicleInfo && selectedVehicle !== 'custom' && (
-                          <div className="bg-[#1e62d0]/10 p-3 rounded-lg border border-[#1e62d0]/20">
-                            <p className="text-sm text-[#0C1C3D]">
-                              <span className="font-semibold">Véhicule sélectionné :</span> {vehicleInfo}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="text-center">
-                      <a
-                        href={`/configurateur?objective=${selectedObjective}&vehicle=${encodeURIComponent(vehicleInfo)}`}
-                        className={`inline-block px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-300 shadow-lg w-full sm:w-auto ${
-                          selectedObjective
-                            ? 'bg-[#FFD700] text-[#0C1C3D] hover:bg-[#FFD700]/90'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        }`}
-                      >
-                        {selectedObjective ? 'Voir les packs d\'adaptation' : 'Sélectionnez un objectif'}
-                      </a>
-                    </div>
-
-                    <p className="text-base text-[#0C1C3D]/70 text-center">
-                      <a href="/configurateur" className="underline hover:text-[#1e62d0] transition-colors duration-300">
-                        Laissez-vous guider par un configurateur guidé complet
-                      </a>
-                    </p>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 5. Bloc "Produits phares" */}
-        <section className="relative py-16 px-8 bg-white">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-12 text-[#0C1C3D]">
-              Nos produits phares
-            </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="bg-white shadow-xl border border-gray-100 p-6 rounded-xl hover:transform hover:scale-105 transition-all duration-300 hover:shadow-2xl h-full flex flex-col">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#1e62d0] to-[#4b94e6] rounded-xl flex items-center justify-center mb-4 mx-auto shadow-lg transform group-hover:rotate-3">
-                  <div className="w-6 h-6 bg-white/20 rounded-lg"></div>
-                </div>
-                <h3 className="text-lg font-semibold mb-2 text-[#0C1C3D] text-center flex-grow">Élévateurs TPMR</h3>
-                <p className="text-gray-600 text-center mb-4 text-sm flex-grow">
-                  Accès facile et sécurisé pour fauteuils roulants
-                </p>
-                <div className="text-center mt-auto">
-                  <a href="/produits/elevateurs-tpmr" className="inline-block bg-[#f2cb05] text-[#1e62d0] px-4 py-2 rounded-full font-semibold text-sm hover:bg-[#e6c205] transition-colors shadow-lg">
-                    Découvrir ce produit
-                  </a>
-                </div>
-              </div>
-              
-              <div className="bg-white shadow-xl border border-gray-100 p-6 rounded-xl hover:transform hover:scale-105 transition-all duration-300 hover:shadow-2xl h-full flex flex-col">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#4b94e6] to-[#1e62d0] rounded-xl flex items-center justify-center mb-4 mx-auto shadow-lg transform group-hover:-rotate-3">
-                  <div className="w-6 h-6 bg-white/20 rounded-full"></div>
-                </div>
-                <h3 className="text-lg font-semibold mb-2 text-[#0C1C3D] text-center flex-grow">Sièges pivotants</h3>
-                <p className="text-gray-600 text-center mb-4 text-sm flex-grow">
-                  Transfert confortable et sécurisé
-                </p>
-                <div className="text-center mt-auto">
-                  <a href="/produits/sieges-pivotants" className="inline-block bg-[#f2cb05] text-[#1e62d0] px-4 py-2 rounded-full font-semibold text-sm hover:bg-[#e6c205] transition-colors shadow-lg">
-                    Découvrir ce produit
-                  </a>
-                </div>
-              </div>
-              
-              <div className="bg-white shadow-xl border border-gray-100 p-6 rounded-xl hover:transform hover:scale-105 transition-all duration-300 hover:shadow-2xl h-full flex flex-col">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#f2cb05] to-[#e6c205] rounded-xl flex items-center justify-center mb-4 mx-auto shadow-lg transform group-hover:rotate-6">
-                  <div className="w-6 h-4 bg-[#1e62d0]/20 rounded-md"></div>
-                </div>
-                <h3 className="text-lg font-semibold mb-2 text-[#0C1C3D] text-center flex-grow">Commandes de conduite</h3>
-                <p className="text-gray-600 text-center mb-4 text-sm flex-grow">
-                  Conduite adaptée et sécurisée
-                </p>
-                <div className="text-center mt-auto">
-                  <a href="/produits/commandes-conduite" className="inline-block bg-[#f2cb05] text-[#1e62d0] px-4 py-2 rounded-full font-semibold text-sm hover:bg-[#e6c205] transition-colors shadow-lg">
-                    Découvrir ce produit
-                  </a>
-                </div>
-              </div>
-              
-              <div className="bg-white shadow-xl border border-gray-100 p-6 rounded-xl hover:transform hover:scale-105 transition-all duration-300 hover:shadow-2xl h-full flex flex-col">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#1e62d0] to-[#4b94e6] rounded-xl flex items-center justify-center mb-4 mx-auto shadow-lg transform group-hover:rotate-3">
-                  <div className="w-6 h-6 bg-white/20 rounded-lg"></div>
-                </div>
-                <h3 className="text-lg font-semibold mb-2 text-[#0C1C3D] text-center flex-grow">Robots chargeurs</h3>
-                <p className="text-gray-600 text-center mb-4 text-sm flex-grow">
-                  Chargement automatique et intelligent
-                </p>
-                <div className="text-center mt-auto">
-                  <a href="/produits/robots-chargeurs" className="inline-block bg-[#f2cb05] text-[#1e62d0] px-4 py-2 rounded-full font-semibold text-sm hover:bg-[#e6c205] transition-colors shadow-lg">
-                    Découvrir ce produit
-                  </a>
-                </div>
-              </div>
-              
-              <div className="bg-white shadow-xl border border-gray-100 p-6 rounded-xl hover:transform hover:scale-105 transition-all duration-300 hover:shadow-2xl h-full flex flex-col">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#4b94e6] to-[#1e62d0] rounded-xl flex items-center justify-center mb-4 mx-auto shadow-lg transform group-hover:-rotate-3">
-                  <div className="w-6 h-6 bg-white/20 rounded-full"></div>
-                </div>
-                <h3 className="text-lg font-semibold mb-2 text-[#0C1C3D] text-center flex-grow">Plateformes élévatrices</h3>
-                <p className="text-gray-600 text-center mb-4 text-sm flex-grow">
-                  Accès vertical sécurisé et stable
-                </p>
-                <div className="text-center mt-auto">
-                  <a href="/produits/plateformes-elevatrices" className="inline-block bg-[#f2cb05] text-[#1e62d0] px-4 py-2 rounded-full font-semibold text-sm hover:bg-[#e6c205] transition-colors shadow-lg">
-                    Découvrir ce produit
-                  </a>
-                </div>
-              </div>
-              
-              <div className="bg-white shadow-xl border border-gray-100 p-6 rounded-xl hover:transform hover:scale-105 transition-all duration-300 hover:shadow-2xl h-full flex flex-col">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#f2cb05] to-[#e6c205] rounded-xl flex items-center justify-center mb-4 mx-auto shadow-lg transform group-hover:rotate-6">
-                  <div className="w-6 h-4 bg-[#1e62d0]/20 rounded-md"></div>
-                </div>
-                <h3 className="text-lg font-semibold mb-2 text-[#0C1C3D] text-center flex-grow">Aménagements sur mesure</h3>
-                <p className="text-gray-600 text-center mb-4 text-sm flex-grow">
-                  Solutions personnalisées selon vos besoins
-                </p>
-                <div className="text-center mt-auto">
-                  <a href="/produits/amenagements-sur-mesure" className="inline-block bg-[#f2cb05] text-[#1e62d0] px-4 py-2 rounded-full font-semibold text-sm hover:bg-[#e6c205] transition-colors shadow-lg">
-                    Découvrir ce produit
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 6. Bloc "Aides au financement" */}
-        <section className="relative py-16 px-8 bg-[#1e62d0]/10 backdrop-blur-sm">
-          <div className="max-w-6xl mx-auto text-center text-white">
-            <h2 className="text-4xl font-bold mb-8 drop-shadow-lg">
-              Aides au financement
-            </h2>
-            <p className="text-xl mb-8 opacity-90 drop-shadow-md">
-              Découvrez les aides disponibles pour financer votre véhicule adapté
-            </p>
-            <div className="grid md:grid-cols-3 gap-8 mb-8">
-              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 shadow-xl hover:transform hover:scale-105 transition-all duration-300">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#1e62d0] to-[#4b94e6] rounded-xl flex items-center justify-center mb-4 mx-auto shadow-lg">
-                  <div className="w-6 h-6 bg-white/20 rounded-lg"></div>
-                </div>
-                <h3 className="font-semibold mb-2 text-lg">PCH (Prestation de Compensation du Handicap)</h3>
-                <p className="text-base opacity-90">Jusqu'à 100% du coût du véhicule et des aménagements</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 shadow-xl hover:transform hover:scale-105 transition-all duration-300">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#4b94e6] to-[#1e62d0] rounded-xl flex items-center justify-center mb-4 mx-auto shadow-lg">
-                  <div className="w-6 h-6 bg-white/20 rounded-full"></div>
-                </div>
-                <h3 className="font-semibold mb-2 text-lg">MDPH</h3>
-                <p className="text-base opacity-90">Maison Départementale des Personnes Handicapées</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 shadow-xl hover:transform hover:scale-105 transition-all duration-300">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#f2cb05] to-[#e6c205] rounded-xl flex items-center justify-center mb-4 mx-auto shadow-lg">
-                  <div className="w-6 h-4 bg-[#1e62d0]/20 rounded-md"></div>
-                </div>
-                <h3 className="font-semibold mb-2 text-lg">Crédit d'impôt</h3>
-                <p className="text-base opacity-90">25% du montant des travaux d'aménagement</p>
-              </div>
-            </div>
+          <nav className="hidden md:flex gap-8">
             <a 
-              href="/aides-financement" 
-              className="inline-block bg-[#f2cb05] text-[#1e62d0] px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#e6c205] transition-all duration-300 transform hover:scale-105 shadow-lg"
+              href="#produits" 
+              className="text-[#333333] hover:text-[#F5C333] transition-colors font-medium"
             >
-              Vérifier mon éligibilité
+              PRODUITS
             </a>
-          </div>
-        </section>
+            <a 
+              href="#innovation" 
+              className="text-[#333333] hover:text-[#F5C333] transition-colors font-medium"
+            >
+              INNOVATION
+            </a>
+            <a 
+              href="#qualite" 
+              className="text-[#333333] hover:text-[#F5C333] transition-colors font-medium"
+            >
+              QUALITÉ
+            </a>
+            <a 
+              href="#actualites" 
+              className="text-[#333333] hover:text-[#F5C333] transition-colors font-medium"
+            >
+              ACTUALITÉS
+            </a>
+            <a 
+              href="#contact" 
+              className="text-[#333333] hover:text-[#F5C333] transition-colors font-medium"
+            >
+              CONTACT
+            </a>
+          </nav>
+          
+          {/* CTA Header */}
+          <a 
+            href="#contact" 
+            className="px-6 py-3 bg-[#F5C333] text-white rounded-lg font-semibold hover:bg-[#4A90E2] transition-all duration-300"
+          >
+            Nous contacter
+          </a>
+        </div>
+      </header>
 
-        {/* 7. Bloc "Témoignages & usages réels" */}
-        <section className="relative py-16 px-8 bg-white">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-12 text-[#0C1C3D]">
-              Témoignages & usages réels
-            </h2>
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center bg-[#f2cb05] text-[#1e62d0] px-6 py-3 rounded-full shadow-lg">
-                <span className="text-xl font-bold">4,9</span>
-                <span className="ml-2 text-lg">/ 5</span>
-                <span className="ml-2 text-lg">⭐</span>
+      {/* 1. Hero visuel impactant */}
+      <section className="relative py-32 px-8 min-h-screen flex items-center bg-[#333333] overflow-hidden">
+        {/* Fond avec overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#333333] via-[#333333]/95 to-[#333333]/80"></div>
+        
+        {/* Image de fond - chirurgien en pleine opération */}
+        <div className="absolute inset-0 opacity-30">
+          <Image
+            src="/chirurgien-operation.jpg"
+            alt="Chirurgien en pleine opération rachidienne"
+            fill
+            className="object-cover object-center"
+            priority
+          />
+        </div>
+        
+        <div className="relative z-10 max-w-7xl mx-auto w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* Colonne gauche - Texte */}
+            <div className="text-white">
+              <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
+                NovaSpine : l'avenir de la chirurgie rachidienne française
+              </h1>
+              <p className="text-xl md:text-2xl mb-12 opacity-90 leading-relaxed">
+                25+ ans d'expertise, conçus, fabriqués en France. Sécurité, performance, innovation.
+              </p>
+              
+              {/* CTA */}
+              <div className="flex flex-col sm:flex-row gap-6">
+                <a 
+                  href="#produits" 
+                  className="px-8 py-4 bg-[#F5C333] text-white rounded-lg font-semibold text-lg hover:bg-[#4A90E2] transition-all duration-300 transform hover:scale-105 shadow-lg"
+                >
+                  Nos produits innovants
+                </a>
+                <a 
+                  href="#qualite" 
+                  className="px-8 py-4 bg-transparent text-white border-2 border-white rounded-lg font-semibold text-lg hover:bg-white hover:text-[#333333] transition-all duration-300 transform hover:scale-105"
+                >
+                  Notre approche qualité
+                </a>
               </div>
             </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-white shadow-xl border border-gray-100 p-8 rounded-xl hover:transform hover:scale-105 transition-all duration-300 hover:shadow-2xl h-full flex flex-col">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#1e62d0] to-[#4b94e6] rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                    <span className="text-white font-bold">T</span>
+            
+            {/* Colonne droite - Visuel amélioré */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative w-full max-w-lg h-96">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#F5C333]/20 to-[#4A90E2]/20 rounded-2xl border border-[#F5C333]/30 backdrop-blur-sm"></div>
+                <div className="absolute inset-4 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                  <div className="text-center text-white">
+                    <div className="w-20 h-20 bg-[#F5C333] rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      </svg>
+                    </div>
+                    <p className="text-lg font-medium">Technologie de précision</p>
+                    <p className="text-sm opacity-75">Chirurgie rachidienne avancée</p>
                   </div>
-                  <div>
-                    <p className="font-semibold text-[#1e62d0] text-lg">Transporteur spécialisé</p>
-                    <p className="text-sm text-gray-600">Van aménagé pour 3 fauteuils</p>
-                  </div>
-                </div>
-                <p className="text-lg italic mb-4 text-gray-700 flex-grow">
-                  "Nos vans aménagés par AccessAbility nous permettent de transporter nos clients en toute sécurité. Un vrai gain de temps et de confort."
-                </p>
-                <div className="flex items-center mt-auto">
-                  <span className="text-yellow-500 text-lg">⭐⭐⭐⭐⭐</span>
-                </div>
-              </div>
-              
-              <div className="bg-white shadow-xl border border-gray-100 p-8 rounded-xl hover:transform hover:scale-105 transition-all duration-300 hover:shadow-2xl h-full flex flex-col">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#4b94e6] to-[#1e62d0] rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                    <span className="text-white font-bold">F</span>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-[#1e62d0] text-lg">Famille avec enfant PMR</p>
-                    <p className="text-sm text-gray-600">Voiture familiale adaptée</p>
-                  </div>
-                </div>
-                <p className="text-lg italic mb-4 text-gray-700 flex-grow">
-                  "Grâce à AccessAbility, notre fils peut maintenant voyager confortablement. L'équipe a été très à l'écoute de nos besoins."
-                </p>
-                <div className="flex items-center mt-auto">
-                  <span className="text-yellow-500 text-lg">⭐⭐⭐⭐⭐</span>
-                </div>
-              </div>
-              
-              <div className="bg-white shadow-xl border border-gray-100 p-8 rounded-xl hover:transform hover:scale-105 transition-all duration-300 hover:shadow-2xl h-full flex flex-col">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#f2cb05] to-[#e6c205] rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                    <span className="text-[#1e62d0] font-bold">P</span>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-[#1e62d0] text-lg">Professionnel de santé</p>
-                    <p className="text-sm text-gray-600">Véhicule de soins à domicile</p>
-                  </div>
-                </div>
-                <p className="text-lg italic mb-4 text-gray-700 flex-grow">
-                  "Mon véhicule aménagé me permet de rendre visite à mes patients en toute autonomie. Un investissement qui change tout."
-                </p>
-                <div className="flex items-center mt-auto">
-                  <span className="text-yellow-500 text-lg">⭐⭐⭐⭐⭐</span>
                 </div>
               </div>
             </div>
-            <div className="text-center mt-8">
-              <a 
-                href="/realisations" 
-                className="inline-block bg-[#f2cb05] text-[#1e62d0] px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#e6c205] transition-all duration-300 transform hover:scale-105 shadow-lg"
-              >
-                Voir nos réalisations
+          </div>
+        </div>
+      </section>
+
+      {/* 2. Section "Nos atouts stratégiques" */}
+      <section className="py-20 px-8 bg-[#F0F0F0]">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-16 text-[#333333]">
+            Nos atouts stratégiques
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Made in France & expérience */}
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:transform hover:scale-105 transition-all duration-300">
+              <div className="w-16 h-16 bg-[#F5C333] rounded-xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-[#333333]">Made in France & expérience</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Plus de 25 ans d'expertise médicale et fabrication française, gage de qualité et de traçabilité.
+              </p>
+            </div>
+            
+            {/* Sécurité & performance */}
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:transform hover:scale-105 transition-all duration-300">
+              <div className="w-16 h-16 bg-[#F5C333] rounded-xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-[#333333]">Sécurité & performance</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Technologie avancée et normes ISO 13485 pour garantir la sécurité et la performance de chaque dispositif.
+              </p>
+            </div>
+            
+            {/* Présence mondiale */}
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:transform hover:scale-105 transition-all duration-300">
+              <div className="w-16 h-16 bg-[#F5C333] rounded-xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-[#333333]">Présence mondiale</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Distribution internationale pour accompagner les chirurgiens du monde entier dans leurs interventions.
+              </p>
+            </div>
+            
+            {/* Formation & innovation */}
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:transform hover:scale-105 transition-all duration-300">
+              <div className="w-16 h-16 bg-[#F5C333] rounded-xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-[#333333]">Formation & innovation</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Engagement dans la formation des jeunes chirurgiens et développement continu de solutions innovantes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Parcours produit mis en avant */}
+      <section id="produits" className="py-20 px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-16 text-[#333333]">
+            Nos produits phares
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* SOCORE Thoraco-Lumbar */}
+            <div className="bg-white border border-gray-200 p-8 rounded-xl shadow-lg hover:shadow-xl hover:border-[#F5C333] transition-all duration-300">
+              <div className="w-full h-48 bg-gradient-to-br from-[#F0F0F0] to-gray-200 rounded-lg mb-6 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-[#F5C333] rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-gray-600 font-medium">SOCORE Thoraco-Lumbar</p>
+                </div>
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-[#333333]">SOCORE Thoraco-Lumbar</h3>
+              <p className="text-gray-600 mb-6">
+                Système complet : Monoaxial, Polyaxial, Crosslinks pour une fixation rachidienne optimale.
+              </p>
+              <a href="#produits" className="inline-block bg-[#4A90E2] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#F5C333] transition-colors">
+                En savoir plus
+              </a>
+            </div>
+            
+            {/* DIVA Cervical & Lumbar */}
+            <div className="bg-white border border-gray-200 p-8 rounded-xl shadow-lg hover:shadow-xl hover:border-[#F5C333] transition-all duration-300">
+              <div className="w-full h-48 bg-gradient-to-br from-[#F0F0F0] to-gray-200 rounded-lg mb-6 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-[#F5C333] rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                  <p className="text-gray-600 font-medium">DIVA Cervical & Lumbar</p>
+                </div>
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-[#333333]">DIVA Cervical & Lumbar</h3>
+              <p className="text-gray-600 mb-6">
+                Solutions innovantes pour les pathologies cervicales et lombaires avec une approche minimalement invasive.
+              </p>
+              <a href="#produits" className="inline-block bg-[#4A90E2] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#F5C333] transition-colors">
+                En savoir plus
+              </a>
+            </div>
+            
+            {/* ALMAS / MATRIS / RODD */}
+            <div className="bg-white border border-gray-200 p-8 rounded-xl shadow-lg hover:shadow-xl hover:border-[#F5C333] transition-all duration-300">
+              <div className="w-full h-48 bg-gradient-to-br from-[#F0F0F0] to-gray-200 rounded-lg mb-6 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-[#F5C333] rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-gray-600 font-medium">ALMAS / MATRIS / RODD</p>
+                </div>
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-[#333333]">ALMAS / MATRIS / RODD</h3>
+              <p className="text-gray-600 mb-6">
+                Gamme complète d'instruments de précision et de systèmes de fixation pour tous types d'interventions.
+              </p>
+              <a href="#produits" className="inline-block bg-[#4A90E2] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#F5C333] transition-colors">
+                En savoir plus
               </a>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* 8. Bloc "Devis rapide" */}
-        <section className="relative py-16 px-8 bg-[#1e62d0]/10 backdrop-blur-sm">
-          <div className="max-w-4xl mx-auto text-center text-white">
-            <h2 className="text-4xl font-bold mb-6 drop-shadow-lg">
-              Un projet en tête ?
-            </h2>
-            <p className="text-xl mb-8 opacity-90 drop-shadow-md">
-              Recevez un devis personnalisé pour votre projet
+      {/* 4. Section dynamique "Actualité & formation" */}
+      <section id="actualites" className="py-20 px-8 bg-[#F0F0F0]">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-16 text-[#333333]">
+            Actualité & formation
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            {/* Formation AJCR */}
+            <div className="bg-white p-8 rounded-xl shadow-lg">
+              <div className="w-full h-32 bg-gradient-to-br from-[#4A90E2] to-[#F5C333] rounded-lg mb-6 flex items-center justify-center">
+                <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 5.477 5.754 5 7.5 5s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 19 16.5 19c-1.746 0-3.332-.523-4.5-1.253" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-[#333333]">Formation AJCR</h3>
+              <p className="text-gray-600 mb-4">
+                Participation active aux formations de l'Association des Jeunes Chirurgiens du Rachis.
+              </p>
+              <div className="text-sm text-[#4A90E2] font-semibold">Formation continue</div>
+            </div>
+            
+            {/* Congrès SFCR */}
+            <div className="bg-white p-8 rounded-xl shadow-lg">
+              <div className="w-full h-32 bg-gradient-to-br from-[#F5C333] to-[#4A90E2] rounded-lg mb-6 flex items-center justify-center">
+                <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-[#333333]">Congrès SFCR</h3>
+              <p className="text-gray-600 mb-4">
+                Présentation de nos innovations lors du congrès de la Société Française de Chirurgie du Rachis.
+              </p>
+              <div className="text-sm text-[#4A90E2] font-semibold">Événement majeur</div>
+            </div>
+            
+            {/* Innovation continue */}
+            <div className="bg-white p-8 rounded-xl shadow-lg">
+              <div className="w-full h-32 bg-gradient-to-br from-[#7ED321] to-[#F5C333] rounded-lg mb-6 flex items-center justify-center">
+                <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-[#333333]">Innovation continue</h3>
+              <p className="text-gray-600 mb-4">
+                Développement de nouvelles solutions et amélioration continue de nos produits existants.
+              </p>
+              <div className="text-sm text-[#4A90E2] font-semibold">R&D active</div>
+            </div>
+          </div>
+          
+          <div className="text-center">
+            <a 
+              href="#actualites" 
+              className="inline-block bg-[#F5C333] text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#4A90E2] transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              Voir toutes les actualités
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Section "Qualité et certifications" */}
+      <section id="qualite" className="py-20 px-8 bg-[#333333] text-white">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-16 text-[#F5C333]">
+            Qualité et certifications
+          </h2>
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="bg-white/10 backdrop-blur-sm p-8 rounded-xl border border-[#F5C333]/30 mb-8">
+                <h3 className="text-2xl font-bold mb-4 text-[#F5C333]">ISO 13485</h3>
+                <p className="text-lg opacity-90 leading-relaxed">
+                  Certifié ISO 13485 pour la conception, fabrication et distribution d'implants rachidiens.
+                </p>
+                <div className="mt-4 text-sm opacity-75">
+                  Certification renouvelée jusqu'en 2024
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-[#F5C333] rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <span className="text-white font-bold text-lg">CE</span>
+                  </div>
+                  <p className="text-sm">CE-Mark</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-[#4A90E2] rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <span className="text-white font-bold text-sm">ANVISA</span>
+                  </div>
+                  <p className="text-sm">ANVISA</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-[#7ED321] rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <span className="text-white font-bold text-sm">FDA</span>
+                  </div>
+                  <p className="text-sm">FDA</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-64 h-64 bg-gradient-to-br from-[#F5C333]/20 to-[#4A90E2]/20 rounded-full flex items-center justify-center mx-auto">
+                <div className="text-center">
+                  <div className="w-32 h-32 bg-[#F5C333] rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-lg font-semibold">Qualité certifiée</p>
+                  <p className="text-sm opacity-75">Normes internationales</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Section "À propos & localisation" */}
+      <section className="py-20 px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-4xl font-bold mb-8 text-[#333333]">
+                À propos de NovaSpine
+              </h2>
+              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                Fondée en 2006, NovaSpine est devenue un acteur majeur de la chirurgie rachidienne française. 
+                Notre siège à Amiens symbolise notre ancrage dans le territoire français et notre engagement 
+                pour l'excellence médicale.
+              </p>
+              
+              <div className="space-y-4 mb-8">
+                <div className="flex items-center">
+                  <div className="w-6 h-6 bg-[#F5C333] rounded-full mr-4"></div>
+                  <span className="text-gray-700">Fondation : 2006</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-6 h-6 bg-[#F5C333] rounded-full mr-4"></div>
+                  <span className="text-gray-700">Siège : Amiens, France</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-6 h-6 bg-[#F5C333] rounded-full mr-4"></div>
+                  <span className="text-gray-700">Expertise : 25+ ans</span>
+                </div>
+              </div>
+              
+              <a 
+                href="#contact" 
+                className="inline-block bg-[#F5C333] text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#4A90E2] transition-all duration-300 transform hover:scale-105 shadow-lg"
+              >
+                Nous contacter
+              </a>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-full h-80 bg-gradient-to-br from-[#F0F0F0] to-gray-200 rounded-xl flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-20 h-20 bg-[#F5C333] rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-gray-600 font-medium">Carte stylisée</p>
+                  <p className="text-sm text-gray-500">Amiens, France</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer / Contact */}
+      <footer id="contact" className="bg-[#333333] text-white py-16 px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-12 mb-12">
+            <div>
+              <h3 className="text-2xl font-bold mb-6">Contact</h3>
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <svg className="w-6 h-6 mr-3 text-[#F5C333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span>335 Rue Saint-Fuscien, 80090 Amiens, France</span>
+                </div>
+                <div className="flex items-center">
+                  <svg className="w-6 h-6 mr-3 text-[#F5C333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                  <span>+33 (0)3 22 50 07 31</span>
+                </div>
+                <div className="flex items-center">
+                  <svg className="w-6 h-6 mr-3 text-[#F5C333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <span>contact@novaspine.fr</span>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="text-2xl font-bold mb-6">Produits</h3>
+              <ul className="space-y-3">
+                <li><a href="#produits" className="hover:text-[#F5C333] transition-colors">SOCORE Thoraco-Lumbar</a></li>
+                <li><a href="#produits" className="hover:text-[#F5C333] transition-colors">DIVA Cervical & Lumbar</a></li>
+                <li><a href="#produits" className="hover:text-[#F5C333] transition-colors">ALMAS / MATRIS / RODD</a></li>
+                <li><a href="#produits" className="hover:text-[#F5C333] transition-colors">Tous nos produits</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-2xl font-bold mb-6">Qualité</h3>
+              <ul className="space-y-3">
+                <li><a href="#qualite" className="hover:text-[#F5C333] transition-colors">Certifications ISO</a></li>
+                <li><a href="#qualite" className="hover:text-[#F5C333] transition-colors">Normes CE</a></li>
+                <li><a href="#qualite" className="hover:text-[#F5C333] transition-colors">Sécurité & Performance</a></li>
+                <li><a href="#qualite" className="hover:text-[#F5C333] transition-colors">Notre approche</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-700 pt-8 text-center">
+            <p className="text-sm text-gray-400">
+              &copy; 2026 NovaSpine. Tous droits réservés. | La colonne vertébrale de l'innovation.
             </p>
-            <div className="bg-white/10 backdrop-blur-sm p-8 rounded-xl border border-white/20 shadow-xl">
-              <form className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-center mb-2 font-semibold text-lg">Type de besoin</label>
-                    <select className="w-full px-4 py-3 rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#f2cb05] transition-all duration-300">
-                      <option value="">Sélectionnez votre besoin</option>
-                      <option value="conduite">Conduite adaptée</option>
-                      <option value="transport">Transport de personne en fauteuil</option>
-                      <option value="accessibilite">Accessibilité véhicule</option>
-                      <option value="professionnel">Usage professionnel</option>
-                      <option value="autre">Autre</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-center mb-2 font-semibold text-lg">Type de véhicule (optionnel)</label>
-                    <input 
-                      type="text" 
-                      placeholder="Marque, modèle, année..." 
-                      className="w-full px-4 py-3 rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#f2cb05] transition-all duration-300"
-                    />
-                  </div>
-                </div>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-center mb-2 font-semibold text-lg">Téléphone</label>
-                    <input 
-                      type="tel" 
-                      placeholder="Votre numéro de téléphone" 
-                      className="w-full px-4 py-3 rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#f2cb05] transition-all duration-300"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-center mb-2 font-semibold text-lg">Email</label>
-                    <input 
-                      type="email" 
-                      placeholder="Votre adresse email" 
-                      className="w-full px-4 py-3 rounded-lg border border-white/30 bg-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#f2cb05] transition-all duration-300"
-                    />
-                  </div>
-                </div>
-                <button className="w-full bg-[#f2cb05] text-[#1e62d0] px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#e6c205] transition-all duration-300 transform hover:scale-105 shadow-lg">
-                  Recevoir mon devis personnalisé
-                </button>
-              </form>
-            </div>
           </div>
-        </section>
-
-        {/* 9. Footer amélioré */}
-        <footer className="bg-[#1e62d0]/90 backdrop-blur-sm text-white py-12 px-8">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-4 gap-8 mb-8">
-              <div>
-                <h3 className="font-semibold mb-4">AccessAbility</h3>
-                <p className="text-sm opacity-90 mb-4">Des solutions de mobilité pour l'autonomie</p>
-                <div className="flex gap-4">
-                  <a href="https://instagram.com/accessability" className="hover:text-[#f2cb05] transition-colors">
-                    <span className="sr-only">Instagram</span>
-                    📷
-                  </a>
-                  <a href="https://linkedin.com/company/accessability" className="hover:text-[#f2cb05] transition-colors">
-                    <span className="sr-only">LinkedIn</span>
-                    💼
-                  </a>
-                </div>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-4">Solutions</h3>
-                <ul className="text-sm space-y-2 opacity-90">
-                  <li><a href="/elevateurs-tpmr" className="hover:opacity-100">Élévateurs TPMR</a></li>
-                  <li><a href="/sieges-pivotants" className="hover:opacity-100">Sièges pivotants</a></li>
-                  <li><a href="/commandes-conduite" className="hover:opacity-100">Commandes de conduite</a></li>
-                  <li><a href="/robots-chargeurs" className="hover:opacity-100">Robots chargeurs</a></li>
-                  <li><a href="/plateformes-elevatrices" className="hover:opacity-100">Plateformes élévatrices</a></li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-4">Support</h3>
-                <ul className="text-sm space-y-2 opacity-90">
-                  <li>📞 01 23 45 67 89</li>
-                  <li>📧 contact@access-ability.fr</li>
-                  <li>📍 France entière</li>
-                  <li>🕒 Lun-Ven 9h-18h</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-4">Légal & Accessibilité</h3>
-                <ul className="text-sm space-y-2 opacity-90">
-                  <li><a href="/mentions-legales" className="hover:opacity-100">Mentions légales</a></li>
-                  <li><a href="/cgv" className="hover:opacity-100">CGV</a></li>
-                  <li><a href="/politique-confidentialite" className="hover:opacity-100">Politique de confidentialité</a></li>
-                  <li><a href="/accessibilite" className="hover:opacity-100">♿ Accessibilité RGAA</a></li>
-                  <li><a href="/boutique" className="hover:opacity-100">🛒 Boutique en ligne</a></li>
-                </ul>
-              </div>
-            </div>
-            <div className="border-t border-white/20 pt-8 text-center">
-              <div className="flex justify-center items-center gap-4 mb-4">
-                <span className="text-sm opacity-75">♿ Accessibilité</span>
-                <span className="text-sm opacity-75">📋 Normes CE</span>
-                <span className="text-sm opacity-75">🔒 RGAA</span>
-              </div>
-              <p className="text-sm opacity-75">&copy; 2024 AccessAbility. Tous droits réservés.</p>
-            </div>
-          </div>
-        </footer>
-      </div>
+        </div>
+      </footer>
     </div>
   );
 } 
