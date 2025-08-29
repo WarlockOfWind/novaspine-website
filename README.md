@@ -1,49 +1,79 @@
-# Access-Ability Website
+# NovaSpine - La colonne vertébrale de l'innovation
 
-Site web pour Access-Ability - Solutions d'accessibilité numérique.
+Site web professionnel de NovaSpine, spécialiste français des implants et instruments pour la chirurgie rachidienne.
 
-## Technologies utilisées
+## 🚀 Technologies
 
-- **Next.js 15** - Framework React
-- **TypeScript** - Typage statique
-- **Tailwind CSS** - Framework CSS utilitaire
-- **React 18** - Bibliothèque UI
+- **Framework** : Next.js 15.4.5
+- **Styling** : Tailwind CSS
+- **Language** : TypeScript
+- **Déploiement** : Vercel
 
-## Installation
+## 🎨 Design & Palette de Couleurs
 
+- **Jaune doré** (#F5C333) : Accents visuels, CTA, icônes
+- **Gris anthracite** (#333333) : Textes, titres, éléments sombres
+- **Bleu acier** (#4A90E2) : Sections secondaires, survols
+- **Gris clair** (#F0F0F0) : Fonds de sections
+- **Vert menthe** (#7ED321) : Touches d'état positif
+
+## 📱 Structure du Site
+
+### Sections Principales
+1. **Hero Section** - Image immersive du chirurgien en opération
+2. **Atouts Stratégiques** - 4 piliers de l'expertise NovaSpine
+3. **Produits Phares** - SOCORE, DIVA, ALMAS/MATRIS/RODD
+4. **Actualités & Formation** - Événements et initiatives
+5. **Qualité & Certifications** - ISO 13485, CE, ANVISA, FDA
+6. **À Propos & Contact** - Histoire et localisation
+
+### Navigation
+- PRODUITS
+- INNOVATION
+- QUALITÉ
+- ACTUALITÉS
+- CONTACT
+
+## 🏥 Produits NovaSpine
+
+- **SOCORE Thoraco-Lumbar** : Système complet Monoaxial, Polyaxial, Crosslinks
+- **DIVA Cervical & Lumbar** : Solutions minimalement invasives
+- **ALMAS / MATRIS / RODD** : Instruments de précision et systèmes de fixation
+
+## 🌟 Caractéristiques
+
+- Design premium et professionnel
+- Interface responsive et moderne
+- Animations et transitions fluides
+- Optimisé pour la performance
+- Accessibilité et UX optimisée
+
+## 🚀 Déploiement
+
+### Local
 ```bash
-# Installer les dépendances
 npm install
-
-# Lancer le serveur de développement
 npm run dev
-
-# Construire pour la production
-npm run build
-
-# Démarrer en production
-npm start
 ```
 
-## Structure du projet
+### Production
+Le site est configuré pour un déploiement automatique sur Vercel.
 
-```
-├── app/                    # Pages Next.js (App Router)
-│   ├── layout.tsx         # Layout principal
-│   ├── page.tsx           # Page d'accueil
-│   └── globals.css        # Styles globaux
-├── components/            # Composants React
-│   └── layout/           # Composants de mise en page
-│       ├── Header.tsx    # En-tête du site
-│       └── Footer.tsx    # Pied de page
-├── public/               # Assets statiques
-└── package.json          # Dépendances et scripts
-```
+## 📍 À Propos de NovaSpine
 
-## Développement
+- **Fondation** : 2006
+- **Siège** : Amiens, France
+- **Expertise** : 25+ ans en chirurgie rachidienne
+- **Certification** : ISO 13485
+- **Présence** : Distribution internationale
 
-Le site est accessible sur `http://localhost:3000` en mode développement.
+## 🔗 Liens
 
-## Déploiement
+- **Site** : [NovaSpine](https://novaspine.fr)
+- **Contact** : contact@novaspine.fr
+- **Téléphone** : +33 (0)3 22 50 07 31
+- **Adresse** : 335 Rue Saint-Fuscien, 80090 Amiens, France
 
-Le projet peut être déployé sur Vercel, Netlify ou tout autre service supportant Next.js.
+---
+
+*"La colonne vertébrale de l'innovation"* - NovaSpine
